@@ -22,9 +22,10 @@ def createAsmGraph(part, hashMem):
 
     # graph framework:
     graph = {'stages': '', 'steps': '', 'sharing': ''}
+    graphBest = graph #create best graph to be null 
 
     for i in range(len(part)):
-        subpartL = part.split(0, i)
+        subpartL = part.split("." ) #split according to "." denoter
         subpartR = part.split(i, len(part))
         # recursive, calls subpart as new part
         graphL = createAsmGraph(subpartL, hashMem)
@@ -36,24 +37,6 @@ def createAsmGraph(part, hashMem):
 
     hashMem.insert(part, graphBest)  # part is key, graphBest is value
     return graphBest
-
-    # (2) base case
-    # if (len(part)) == 1:
-    # construct graph?
-    #   graph_new = graph.copy()
-    #   graph_new['stages'] =
-    #   graph_new['steps'] =
-    #   graph_new = ['sharing'] =
-    # return graph_new
-
-    # (3) recursive step: iteratively partition part and recurse
-    #    find best graph for left and right partitions
-    #   combine left and right graphs into new graph for intermediate part
-    #   if cost of new graph is the best so far save the geaph
-    #
-    # (4) add best graph to hash table and return
-
-# combine graphs function
 
 
 def combineGraphs(graphL, graphR):
@@ -88,6 +71,23 @@ def minCost(graph0, graph1):
     g = [graph0, graph1]
     return random.choice(g)
 
+def maxCost(graph0, graph1): 
+    #start by choosing maximum number of stages
+    if graph0['stages'] > graph1['stages']:
+        return graph0
+    if graph1['stages'] > graph0['stages']:
+        return graph1
+
+    # If number of stages equal, then graph with more steps is of higher cost
+    if graph0['steps'] > graph1['steps']:
+        return graph0
+    if graph1['steps'] > graph0['steps']:
+        return graph1
+
+    # Graphs have identical cost so arbitrarily choose one
+    g = [graph0, graph1]
+    return random.choice(g)
+
 #################### MAIN ###########################
 
 
@@ -102,7 +102,7 @@ def main():
     # print(fileList)
 
     hashMem = {}  # empty hashMem dictionary
-    part = 'a'
+    part = 'a.b.c.d.'
 
     graphOut = createAsmGraph(part, hashMem)
     print(graphOut)
