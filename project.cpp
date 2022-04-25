@@ -3,6 +3,9 @@ Delaney Dow & Marlee Feltham
 EC552 Spring 22 Final Project
 */
 
+// https://github.com/marleef/EC552-Project.git
+// g++ -o project project.cpp -std=c++17
+
 #include <iostream>
 #include <unordered_map>
 #include <string>
@@ -18,6 +21,21 @@ using namespace std;
 typedef unordered_map<string, int> graph;
 typedef unordered_map<string, graph> hashGraph;
 // # create graph function
+
+void printhashGraph(hashGraph g)
+{
+    for (auto const &[k1, v1] : g)
+    {
+        std::cout << k1 << " : ";
+        for (auto const &[k2, v2] : v1)
+        {
+            if (&k2 != &v1.begin()->first)
+                std::cout << ", ";
+            std::cout << k2 << " : " << v2;
+        }
+        std::cout << std::endl;
+    }
+}
 
 graph combineGraphs(graph graphL, graph graphR)
 {
@@ -56,6 +74,7 @@ graph minCost(graph graph0, graph graph1)
 
 graph createAsmGraph(string part, hashGraph hashMem)
 {
+    // printf("%lu\n", part.length());
     if (hashMem.find(part) != hashMem.end())
     {
         return hashMem[part];
@@ -80,6 +99,12 @@ graph createAsmGraph(string part, hashGraph hashMem)
         graphBest = minCost(graphNew, graphBest);
         // printf("%s", subpartL.c_str());
     }
+    hashMem[part] = graphBest;
+    for (const auto &x : hashMem[part])
+    {
+        std::cout << x.first << ": " << x.second << endl;
+    }
+    printhashGraph(hashMem);
     return hashMem[part];
 }
 
@@ -92,13 +117,15 @@ int main()
     empty["Sharing"] = -1;
     part.erase(std::remove(part.begin(), part.end(), '.'), part.end());
     hashGraph hashMem;
-    hashMem[part] = empty;
-    for (const auto &x : empty)
-    {
-        std::cout << x.first << ": " << x.second << endl;
-    }
+    // hashMem[] = empty;
+    // for (const auto &x : empty)
+    // {
+    //     std::cout << x.first << ": " << x.second << endl;
+    // }
 
     graph out = createAsmGraph("abcd", hashMem);
+    // printf("%lu", part.length());
+    // printhashGraph(hashMem);
 }
 
 /*
