@@ -14,33 +14,43 @@ EC552 Spring 22 Final Project
 
 using namespace std;
 
-// key: part
-// value: graph info (stages, steps, sharing)
+/*
+key: part
+value: graph info (stages, steps, sharing)
 
-// #################### DATA PARSE #####################
+hashMem:
+{{'a', {stages, 1}, {steps, 1}}, {'ab', {stages, 2}, {steps, 2}}} => same as {{'a', grapha}, {'ab', graphab}}
+
+graph:
+{stages, 1}, {steps, 1}
+*/
+
+/* unordered map structs */
 typedef unordered_map<string, int> graph;
 typedef unordered_map<string, graph> hashGraph;
-// # create graph function
 
+/* print vals in hashGraph (nested map), used for debugging*/
 void printhashGraph(hashGraph g)
 {
-    for (auto const &[k1, v1] : g)
+    for (auto const &[x, y] : g)
     {
-        std::cout << k1 << " : ";
-        for (auto const &[k2, v2] : v1)
+        cout << x << " : ";
+        for (auto const &[x1, y1] : y)
         {
-            if (&k2 != &v1.begin()->first)
-                std::cout << ", ";
-            std::cout << k2 << " : " << v2;
+            if (&x1 != &y.begin()->first)
+                cout << ", ";
+            cout << x1 << " : " << y1;
         }
-        std::cout << std::endl;
+        cout << endl;
     }
 }
 
+/* combine child graphs */
 graph combineGraphs(graph graphL, graph graphR)
 {
-    graph graphNew = graphL;
-    graphNew.merge(graphR);
+    graph graphNew = graphL; // set graphNew as graphL
+    graphNew.merge(graphR);  // merge graphL and graphR, set as graphNew
+
     graphNew["Stages"] = max(graphL["Stages"], graphR["Stages"]) + 1;
     graphNew["Steps"] = graphL["Steps"] + graphR["Steps"] + 1;
 
@@ -49,6 +59,7 @@ graph combineGraphs(graph graphL, graph graphR)
 
 graph minCost(graph graph0, graph graph1)
 {
+    /* stages takes priority */
     if (graph0["Stages"] < graph0["Stages"])
     {
         return graph0;
@@ -59,6 +70,7 @@ graph minCost(graph graph0, graph graph1)
     }
     else if (graph0["Stages"] == graph0["Stages"])
     {
+        /* stages are equal, check steps */
         if (graph0["Steps"] < graph0["Steps"])
         {
             return graph0;
@@ -72,66 +84,56 @@ graph minCost(graph graph0, graph graph1)
     return graph0;
 }
 
+/* graph building */
 graph createAsmGraph(string part, hashGraph hashMem)
 {
-    // printf("%lu\n", part.length());
-    if (hashMem.find(part) != hashMem.end())
+    if (hashMem.find(part) != hashMem.end()) // memoization case (memoization hash already has desired part)
     {
         return hashMem[part];
     }
-    if (part.length() == 1)
+    if (part.length() == 1) // base case (part is primitive part)
     {
         return hashMem[part];
     }
 
+    /* initialization */
     graph graphL, graphR, graphBest, graphNew;
     string subpartL, subpartR;
 
+    /* recursion */
     for (int i = 0; i < part.length() - 1; i++)
     {
+        /* find best graph for L and R partitions */
         subpartL = part.substr(0, i + 1);
         subpartR = part.substr(i + 1, part.length());
         // cout << "subpartL " << subpartL << endl;
         // cout << "subpartR " << subpartR << endl;
         graphL = createAsmGraph(subpartL, hashMem);
         graphR = createAsmGraph(subpartR, hashMem);
-        graphNew = combineGraphs(graphL, graphR);
-        graphBest = minCost(graphNew, graphBest);
-        // printf("%s", subpartL.c_str());
+
+        graphNew = combineGraphs(graphL, graphR); // make intermediate part
+        graphBest = minCost(graphNew, graphBest); // save graph with best cost
     }
-    hashMem[part] = graphBest;
-    for (const auto &x : hashMem[part])
-    {
-        std::cout << x.first << ": " << x.second << endl;
-    }
-    printhashGraph(hashMem);
-    return hashMem[part];
+
+    hashMem[part] = graphBest; // add graph to hash table
+
+    return graphBest;
 }
 
 int main()
 {
     string part = "a.b.c.d";
-    graph empty;
-    empty["Stages"] = -1;
-    empty["Steps"] = -1;
-    empty["Sharing"] = -1;
     part.erase(std::remove(part.begin(), part.end(), '.'), part.end());
+
+    graph empty;
+    empty["Stages"] = 0;
+    empty["Steps"] = 0;
+    empty["Sharing"] = 0;
     hashGraph hashMem;
-    // hashMem[] = empty;
-    // for (const auto &x : empty)
-    // {
-    //     std::cout << x.first << ": " << x.second << endl;
-    // }
 
-    graph out = createAsmGraph("abcd", hashMem);
-    // printf("%lu", part.length());
-    // printhashGraph(hashMem);
+    graph out = createAsmGraph(part, hashMem);
+    for (const auto &x : out)
+    {
+        std::cout << x.first << ": " << x.second << endl;
+    }
 }
-
-/*
-hashMem:
-{{'a', {stages, 1}, {steps, 1}}, {'ab', {stages, 2}, {steps, 2}}} => same as {{'a', grapha}, {'ab', graphab}}
-
-graph:
-{stages, 1}, {steps, 1}
-*/
