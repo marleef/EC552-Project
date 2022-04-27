@@ -31,15 +31,6 @@ label_file_explorer.grid(column = 0, row = 5)
 button_explore.grid(column = 0, row = 4)
 
 
-
-img = Image.open("LachesisWorst.png")
-img_resize = img.resize((250,250), Image.Resampling.LANCZOS)
-newim_W = ImageTk.PhotoImage(img_resize)
-
-img = Image.open("LachesisBest.png")
-img_resize = img.resize((250,250), Image.Resampling.LANCZOS)
-newim_B = ImageTk.PhotoImage(img_resize)
-
 img = Image.open("AnimeLachesis.png")
 img_resize = img.resize((150,150), Image.Resampling.LANCZOS)
 UI_flair = ImageTk.PhotoImage(img_resize)
@@ -97,11 +88,19 @@ def clicked():
     optimization = optienter.get(optienter.curselection())
     deoptimization = aoenter.get(aoenter.curselection())
     info.configure(text="Re-enter parameters and create new assemblies!")
+    interface = ctypes.CDLL(cwd+'/project.cpp')
+    [imfile_Best, imfile_Worst] = interface.main_interface(filename, part, optimization, deoptimization)
+
+    img = Image.open(imfile_Worst)
+    img_resize = img.resize((250,250), Image.Resampling.LANCZOS)
+    newim_W = ImageTk.PhotoImage(img_resize)
+
+    img = Image.open(imfile_Best)
+    img_resize = img.resize((250,250), Image.Resampling.LANCZOS)
+    newim_B = ImageTk.PhotoImage(img_resize)
     graphWorst.configure(image = newim_W)
     graphBest.configure(image = newim_B) ### need different variable
-    interface = ctypes.CDLL(cwd+'/project.cpp')
-    interface.main_interface(filename, part, optimization, deoptimization)
-    
+
 RunButton = Button(window, text="Generate Assembly Protocol(s)", command=clicked, fg="green",bg="white")
 RunButton.grid(column=2,row=5)
 
