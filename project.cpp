@@ -61,22 +61,11 @@ graph combineGraphs(graph graphL, graph graphR)
 graph minCost(graph graph0, graph graph1)
 {
     /* stages takes priority */
-    // debugging...what is going on
-    for (const auto &x : graph0)
-    {
-        cout << "graph0" << x.first << ": " << x.second << endl;
-    }
-    for (const auto &x : graph1)
-    {
-        cout << "graph1" << x.first << ": " << x.second << endl;
-    }
-
-    /////
     if (graph0["Stages"] < graph1["Stages"])
     {
         return graph0;
     }
-    else if (graph0["Stages"] > graph1["Stages"])
+    else if (graph1["Stages"] < graph0["Stages"])
     {
         return graph1;
     }
@@ -87,7 +76,7 @@ graph minCost(graph graph0, graph graph1)
         {
             return graph0;
         }
-        else if (graph0["Steps"] > graph1["Steps"])
+        else if (graph1["Steps"] < graph0["Steps"])
         {
             return graph1;
         }
@@ -115,6 +104,9 @@ graph createAsmGraph(string part, hashGraph hashMem)
     graph graphL, graphR, graphBest, graphNew;
     string subpartL, subpartR;
 
+    graphBest["Stages"] = 5000;
+    graphBest["Steps"] = 5000;
+
     /* recursion */
     for (int i = 0; i < part.length() - 1; i++)
     {
@@ -125,12 +117,12 @@ graph createAsmGraph(string part, hashGraph hashMem)
         // cout << "subpartR " << subpartR << endl;
         graphL = createAsmGraph(subpartL, hashMem);
         graphR = createAsmGraph(subpartR, hashMem);
-
         graphNew = combineGraphs(graphL, graphR); // make intermediate part
         graphBest = minCost(graphNew, graphBest); // save graph with best cost
     }
 
-    hashMem[part] = graphBest; // add graph to hash table
+    pair<string, graph> new_elem(part, graphBest);
+    hashMem.insert(new_elem); // add graph to hash table
 
     return graphBest;
 }
@@ -140,9 +132,9 @@ int main()
     fstream fin;
     fin.open("dataset.csv", ios::in);
     string line;
-    string part = "";
+    string part = "abcdegh";
     hashGraph hashMem;
-
+    graph out;
     while (!fin.eof())
     {
         fin >> line;
@@ -150,11 +142,12 @@ int main()
         cout << "\n"
              << line << endl;
         hashMem.clear();
-        graph out = createAsmGraph(line, hashMem);
+        out = createAsmGraph(line, hashMem);
         for (const auto &x : out)
         {
             cout << x.first << ": " << x.second << endl;
         }
     }
+
     return 0;
 }
