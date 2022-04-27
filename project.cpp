@@ -6,11 +6,12 @@ EC552 Spring 22 Final Project
 // https://github.com/marleef/EC552-Project.git
 // g++ -o project project.cpp -std=c++17
 
-#include <iostream>
 #include <unordered_map>
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <fstream>
+#include <vector>
 
 using namespace std;
 
@@ -122,18 +123,34 @@ graph createAsmGraph(string part, hashGraph hashMem)
 
 int main()
 {
-    string part = "a.b.c.d";
-    part.erase(std::remove(part.begin(), part.end(), '.'), part.end());
+    fstream fin;
+    fin.open("dataset.csv", ios::in);
+    string line;
+    vector<string> words;
 
-    graph empty;
-    empty["Stages"] = 0;
-    empty["Steps"] = 0;
-    empty["Sharing"] = 0;
-    hashGraph hashMem;
-
-    graph out = createAsmGraph(part, hashMem);
-    for (const auto &x : out)
+    while (!fin.eof())
     {
-        std::cout << x.first << ": " << x.second << endl;
+        fin >> line;
+        words.push_back(line);
+        // cout << line << endl;
     }
+
+    string part = "";
+    hashGraph hashMem;
+    hashMem.clear();
+
+    for (int i = 0; i < words.size(); i++)
+    {
+        part = words[i];
+        part.erase(remove(part.begin(), part.end(), '.'), part.end());
+        cout << "\n"
+             << part << endl;
+        hashMem.clear();
+        graph out = createAsmGraph(part, hashMem);
+        for (const auto &x : out)
+        {
+            cout << x.first << ": " << x.second << endl;
+        }
+    }
+    return 0;
 }
