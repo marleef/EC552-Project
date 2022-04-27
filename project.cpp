@@ -126,27 +126,17 @@ int main()
     fstream fin;
     fin.open("dataset.csv", ios::in);
     string line;
-    vector<string> words;
+    string part = "";
+    hashGraph hashMem;
 
     while (!fin.eof())
     {
         fin >> line;
-        words.push_back(line);
-        // cout << line << endl;
-    }
-
-    string part = "";
-    hashGraph hashMem;
-    hashMem.clear();
-
-    for (int i = 0; i < words.size(); i++)
-    {
-        part = words[i];
-        part.erase(remove(part.begin(), part.end(), '.'), part.end());
+        line.erase(remove(line.begin(), line.end(), '.'), line.end());
         cout << "\n"
-             << part << endl;
+             << line << endl;
         hashMem.clear();
-        graph out = createAsmGraph(part, hashMem);
+        graph out = createAsmGraph(line, hashMem);
         for (const auto &x : out)
         {
             cout << x.first << ": " << x.second << endl;
