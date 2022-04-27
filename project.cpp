@@ -61,22 +61,33 @@ graph combineGraphs(graph graphL, graph graphR)
 graph minCost(graph graph0, graph graph1)
 {
     /* stages takes priority */
-    if (graph0["Stages"] < graph0["Stages"])
+    // debugging...what is going on
+    for (const auto &x : graph0)
+    {
+        cout << "graph0" << x.first << ": " << x.second << endl;
+    }
+    for (const auto &x : graph1)
+    {
+        cout << "graph1" << x.first << ": " << x.second << endl;
+    }
+
+    /////
+    if (graph0["Stages"] < graph1["Stages"])
     {
         return graph0;
     }
-    else if (graph0["Stages"] > graph0["Stages"])
+    else if (graph0["Stages"] > graph1["Stages"])
     {
         return graph1;
     }
-    else if (graph0["Stages"] == graph0["Stages"])
+    else if (graph0["Stages"] == graph1["Stages"])
     {
         /* stages are equal, check steps */
-        if (graph0["Steps"] < graph0["Steps"])
+        if (graph0["Steps"] < graph1["Steps"])
         {
             return graph0;
         }
-        else if (graph0["Steps"] > graph0["Steps"])
+        else if (graph0["Steps"] > graph1["Steps"])
         {
             return graph1;
         }
@@ -90,11 +101,14 @@ graph createAsmGraph(string part, hashGraph hashMem)
 {
     if (hashMem.find(part) != hashMem.end()) // memoization case (memoization hash already has desired part)
     {
-        return hashMem[part];
+        return hashMem[part]; // get graph part from hashMem
     }
     if (part.length() == 1) // base case (part is primitive part)
     {
-        return hashMem[part];
+        graph primitive;
+        primitive["Stages"] = 0;
+        primitive["Steps"] = 0;
+        return primitive; // new graph with just the given part
     }
 
     /* initialization */
