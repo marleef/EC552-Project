@@ -127,12 +127,12 @@ graph createAsmGraph(string part, hashGraph hashMem)
     return graphBest;
 }
 
-int main()
+int main_interface(string filename, string part, string opti, string deopti)
 {
     fstream fin;
-    fin.open("dataset.csv", ios::in);
+    fin.open(filename, ios::in);
     string line;
-    string part = "abcdegh";
+    //string part = "abcdegh";
     hashGraph hashMem;
     graph out;
     while (!fin.eof())

@@ -5,28 +5,49 @@ James Maher & Drew Gross
 EC552 Spring 22 Final Project
 """
 from tkinter import *
+from tkinter import filedialog
 from PIL import ImageTk, Image
+import project.cpp
 # from tkinter.ttk import *
 
 window = Tk()
 window.title("DNA Assembly Optimization Tool")
 window.geometry('1400x800')
 
-"""
-frame = Frame(window)
-frame.grid(column=3,row=4)
-frame.place(anchor = 'ne', relx=0.5, rely=0.5)
-"""
+###Option to upload .csv file
+def browseFiles():
+    filename = filedialog.askopenfilename(initialdir = "/", title = "Select a File",filetypes = (("CSV files","*.csv*"),("all files","*.*")))
+      
+    # Change label contents
+    label_file_explorer.configure(text="File Opened: "+filename)
 
-img = Image.open("Lachesis.png")
-img_resize = img.resize((300,300), Image.Resampling.LANCZOS)
-newim = ImageTk.PhotoImage(img_resize)
-#imlabel = Label(frame, image = newim)
+filename = "dataset.csv"
+label_file_explorer = Label(window,text = " ",fg = "indigo") 
+button_explore = Button(window, text = "Browse Files",commmand = browseFiles)
+label_file_explorer.grid(column = 0, row = 5)
+button_explore.grid(column = 0, row = 4)
+
+
+
+img = Image.open("LachesisWorst.png")
+img_resize = img.resize((250,250), Image.Resampling.LANCZOS)
+newim_W = ImageTk.PhotoImage(img_resize)
+
+img = Image.open("LachesisBest.png")
+img_resize = img.resize((250,250), Image.Resampling.LANCZOS)
+newim_B = ImageTk.PhotoImage(img_resize)
+
+img = Image.open("AnimeLachesis.png")
+img_resize = img.resize((150,150), Image.Resampling.LANCZOS)
+UI_flair = ImageTk.PhotoImage(img_resize)
+
+info = Label(window, image=UI_flair)
+info.grid(column=0,row=1)
 
 info = Label(window, text="Enter parameters and create assemblies!", font=("Times New Roman",18))
 info.grid(column=1,row=0)
 
-tit = Label(window, text="Lachesis",fg="indigo", font=("Comic Sans MS",48))
+tit = Label(window, text="Lachesis",fg="indigo", font=("Times New Roman",48))
 tit.grid(column=0,row=0)
 
 partenter = Entry(window, width = 10)
@@ -73,8 +94,8 @@ def clicked():
     optimization = optienter.get(optienter.curselection())
     deoptimization = aoenter.get(aoenter.curselection())
     info.configure(text="Re-enter parameters and create new assemblies!")
-    graphWorst.configure(image = newim)
-    graphBest.configure(image = newim)
+    graphWorst.configure(image = newim_W)
+    graphBest.configure(image = newim_B) ### need different variable
     
 RunButton = Button(window, text="Generate Assembly Protocol(s)", command=clicked, fg="green",bg="white")
 RunButton.grid(column=2,row=5)

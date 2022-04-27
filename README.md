@@ -11,9 +11,7 @@ Genetic circuit design program for
 `python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade Pillow`
 
-`python project_gui.py` -->
-#### 3. Cello file structure
-
+`python project_gui.py`
 
 ##
 
