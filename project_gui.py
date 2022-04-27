@@ -7,8 +7,11 @@ EC552 Spring 22 Final Project
 from tkinter import *
 from tkinter import filedialog
 from PIL import ImageTk, Image
-import project.cpp
+import ctypes
+import os
 # from tkinter.ttk import *
+
+cwd = os.getcwd()
 
 window = Tk()
 window.title("DNA Assembly Optimization Tool")
@@ -23,7 +26,7 @@ def browseFiles():
 
 filename = "dataset.csv"
 label_file_explorer = Label(window,text = " ",fg = "indigo") 
-button_explore = Button(window, text = "Browse Files",commmand = browseFiles)
+button_explore = Button(window, text = "Browse Files",command = browseFiles)
 label_file_explorer.grid(column = 0, row = 5)
 button_explore.grid(column = 0, row = 4)
 
@@ -96,6 +99,8 @@ def clicked():
     info.configure(text="Re-enter parameters and create new assemblies!")
     graphWorst.configure(image = newim_W)
     graphBest.configure(image = newim_B) ### need different variable
+    interface = ctypes.CDLL(cwd+'/project.cpp')
+    interface.main_interface(filename, part, optimization, deoptimization)
     
 RunButton = Button(window, text="Generate Assembly Protocol(s)", command=clicked, fg="green",bg="white")
 RunButton.grid(column=2,row=5)
