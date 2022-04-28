@@ -127,7 +127,7 @@ graph createAsmGraph(string part, hashGraph hashMem)
     return graphBest;
 }
 
-int main_interface(string filename, string part, string opti, string deopti)
+ int main_interface(string filename, string part, double cost_stage, double cost_step)
 {
     fstream fin;
     fin.open(filename, ios::in);

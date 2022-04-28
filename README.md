@@ -3,7 +3,7 @@
 Drew Gross, Delaney Dow, James Maher, and Marlee Feltham
 
 ## Description
-Genetic circuit design program for 
+Genetic assembly optimization program that automizes part assembly steps based on costs.
 
 ## Instructions
 #### 1. Install python 3.10 and pip
