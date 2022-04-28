@@ -117,6 +117,20 @@ graph createAsmGraph(string part, hashGraph hashMem)
     }
     pair<string, graph> new_elem(part, graphBest);
     hashMem.insert(new_elem); // add graph to hash table
+    fstream fout;
+    fout.open("export.csv", ios::out | ios::app);
+
+    for (auto const &[x, y] : hashMem)
+    {
+        fout << x << " : ";
+        for (auto const &[x1, y1] : y)
+        {
+            if (&x1 != &y.begin()->first)
+                fout << ", ";
+            fout << x1 << " : " << y1 << ",";
+        }
+        // fout << "\n";
+    }
     return graphBest;
 }
 
@@ -127,6 +141,7 @@ int main()
     string line;
     hashGraph hashMem;
     graph out;
+
     while (!fin.eof())
     {
         fin >> line;
