@@ -99,7 +99,7 @@ graphWorst= Label(window, text= "Assembly tree will\n print here.")
 graphWorst.grid(column=1,row=4)
 
 errormsg = Label(window,text=" ")
-errormsg.grid(column=2,row=6)
+errormsg.grid(column=3,row=6)
 
 def clicked():
     
@@ -115,8 +115,10 @@ def clicked():
     
     info.configure(text="Re-enter parameters and create new assemblies!")
     interface = ctypes.CDLL(cwd+'/project.cpp')
-    [imfile_Best, imfile_Worst] = interface.main_interface(filename, part, cost_stage, cost_step)
-
+    if ".csv" in filename and len(filename) == 0:
+        [imfile_Best, imfile_Worst] = interface.main_interface(filename, cost_stage, cost_step)
+    else:
+        [imfile_Best, imfile_Worst] = interface.main_interface(part, cost_stage, cost_step)
     img = Image.open(imfile_Worst)
     img_resize = img.resize((250,250), Image.Resampling.LANCZOS)
     newim_W = ImageTk.PhotoImage(img_resize)
@@ -125,7 +127,9 @@ def clicked():
     img_resize = img.resize((250,250), Image.Resampling.LANCZOS)
     newim_B = ImageTk.PhotoImage(img_resize)
     graphWorst.configure(image = newim_W)
-    graphBest.configure(image = newim_B) ### need different variable
+    graphBest.configure(image = newim_B)
+    graphBest.configure(text="a     b     c     d\n\\     /     \\     /\nab        cd\n  \\      /\n    abcd")
+    graphWorst.configure(text="a     b     c     d\n\\    /      |     |\nab        c    d\n \\        /     |\n   \\    /       |\n     abc       d\n   \\        /\n     \\    /\n     abcd")
 
 RunButton = Button(window, text="Generate Assembly Protocol(s)", command=clicked, fg="green",bg="white")
 RunButton.grid(column=3,row=5)

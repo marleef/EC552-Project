@@ -135,27 +135,30 @@ graph createAsmGraph(string part, hashGraph hashMem)
 }
 
 
- int main_interface(string filename, string part, double cost_stage, double cost_step)
+ int main_interface(string part_file, double cost_stage, double cost_step)
 {
-    fstream fin;
-    fin.open("dataset.csv", ios::in);
-    string line;
-    hashGraph hashMem;
-    graph out;
-
-    while (!fin.eof())
+    if (part_file.find(".csv") != false)
     {
-        fin >> line;
-        line.erase(remove(line.begin(), line.end(), '.'), line.end());
-        cout << "\n"
-             << line << endl;
-        hashMem.clear();
-        out = createAsmGraph(line, hashMem);
-        for (const auto &x : out)
+        fstream fin;
+        fin.open(part_file, ios::in);
+    
+        string line;
+        hashGraph hashMem;
+        graph out;
+
+        while (!fin.eof())
         {
-            cout << x.first << ": " << x.second << endl;
+            fin >> line;
+            line.erase(remove(line.begin(), line.end(), '.'), line.end());
+            cout << "\n"
+                 << line << endl;
+            hashMem.clear();
+            out = createAsmGraph(line, hashMem);
+            for (const auto &x : out)
+            {
+                cout << x.first << ": " << x.second << endl;
+            }
         }
     }
-
     return 0;
 }
