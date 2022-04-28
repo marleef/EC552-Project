@@ -16,3 +16,5 @@ python3 -m pip install --upgrade Pillow`
 ##
 
 ## Suggested Reading
+"Algorithms for automated DNA assembly"
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2860133/
