@@ -115,10 +115,15 @@ def clicked():
     
     info.configure(text="Re-enter parameters and create new assemblies!")
     interface = ctypes.CDLL(cwd+'/project.cpp')
-    if ".csv" in filename and len(filename) == 0:
-        [imfile_Best, imfile_Worst] = interface.main_interface(filename, cost_stage, cost_step)
+    if ".csv" in filename and len(filename) != 0:  ## checks if .csv file chosen
+        if len(part) !=0                           ## appends text input to csv file if it exists
+            with open(filename,'a') as fd:
+            fd.write(myCsvRow)
+            [imfile_Best, imfile_Worst] = interface.main_interface(fd, cost_stage, cost_step)  ## argument is appended csv file
+        else:
+            [imfile_Best, imfile_Worst] = interface.main_interface(filename, cost_stage, cost_step) ## argument is unedited csv
     else:
-        [imfile_Best, imfile_Worst] = interface.main_interface(part, cost_stage, cost_step)
+        [imfile_Best, imfile_Worst] = interface.main_interface(part, cost_stage, cost_step) ## argument is text input only if no filename chosen
     img = Image.open(imfile_Worst)
     img_resize = img.resize((250,250), Image.Resampling.LANCZOS)
     newim_W = ImageTk.PhotoImage(img_resize)

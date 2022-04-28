@@ -150,8 +150,7 @@ graph createAsmGraph(string part, hashGraph hashMem)
         {
             fin >> line;
             line.erase(remove(line.begin(), line.end(), '.'), line.end());
-            cout << "\n"
-                 << line << endl;
+            cout << "\n"  << line << endl;
             hashMem.clear();
             out = createAsmGraph(line, hashMem);
             for (const auto &x : out)
