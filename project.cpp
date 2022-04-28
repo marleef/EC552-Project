@@ -81,60 +81,68 @@ graph minCost(graph graph0, graph graph1)
             return graph1;
         }
     }
-
-    return graph0;
+    return graph0; // arbitrarily choose graph0 if cost is equal
 }
 
 /* graph building */
 graph createAsmGraph(string part, hashGraph hashMem)
 {
-    if (hashMem.find(part) != hashMem.end()) // memoization case (memoization hash already has desired part)
+    if (hashMem.find(part) != hashMem.end())
     {
+        // memoization case (memoization hash already has desired part)
         return hashMem[part]; // get graph part from hashMem
     }
-    if (part.length() == 1) // base case (part is primitive part)
-    {
+    if (part.length() == 1)
+    { // base case (part is primitive part)
         graph primitive;
         primitive["Stages"] = 0;
         primitive["Steps"] = 0;
         return primitive; // new graph with just the given part
     }
-
     /* initialization */
     graph graphL, graphR, graphBest, graphNew;
     string subpartL, subpartR;
-
     graphBest["Stages"] = 5000;
     graphBest["Steps"] = 5000;
-
     /* recursion */
     for (int i = 0; i < part.length() - 1; i++)
     {
         /* find best graph for L and R partitions */
         subpartL = part.substr(0, i + 1);
         subpartR = part.substr(i + 1, part.length());
-        // cout << "subpartL " << subpartL << endl;
-        // cout << "subpartR " << subpartR << endl;
         graphL = createAsmGraph(subpartL, hashMem);
         graphR = createAsmGraph(subpartR, hashMem);
         graphNew = combineGraphs(graphL, graphR); // make intermediate part
         graphBest = minCost(graphNew, graphBest); // save graph with best cost
     }
-
     pair<string, graph> new_elem(part, graphBest);
     hashMem.insert(new_elem); // add graph to hash table
+    fstream fout;
+    fout.open("export.csv", ios::out | ios::app);
 
+    for (auto const &[x, y] : hashMem)
+    {
+        fout << x << " : ";
+        for (auto const &[x1, y1] : y)
+        {
+            if (&x1 != &y.begin()->first)
+                fout << ", ";
+            fout << x1 << " : " << y1 << ",";
+        }
+        // fout << "\n";
+    }
     return graphBest;
 }
+
 
  int main_interface(string filename, string part, double cost_stage, double cost_step)
 {
     fstream fin;
-    fin.open(filename, ios::in);
+    fin.open("dataset.csv", ios::in);
     string line;
-    //string part = "abcdegh";
     hashGraph hashMem;
     graph out;
+
     while (!fin.eof())
     {
         fin >> line;
