@@ -116,10 +116,10 @@ def clicked():
     info.configure(text="Re-enter parameters and create new assemblies!")
     interface = ctypes.CDLL(cwd+'/project.cpp')
     if ".csv" in filename and len(filename) != 0:  ## checks if .csv file chosen
-        if len(part) !=0                           ## appends text input to csv file if it exists
+        if len(part) !=0:                           ## appends text input to csv file if it exists
             with open(filename,'a') as fd:
-            fd.write(myCsvRow)
-            [imfile_Best, imfile_Worst] = interface.main_interface(fd, cost_stage, cost_step)  ## argument is appended csv file
+                fd.write(myCsvRow)
+                [imfile_Best, imfile_Worst] = interface.main_interface(fd, cost_stage, cost_step)  ## argument is appended csv file
         else:
             [imfile_Best, imfile_Worst] = interface.main_interface(filename, cost_stage, cost_step) ## argument is unedited csv
     else:
