@@ -84,6 +84,32 @@ graph minCost(graph graph0, graph graph1)
     return graph0; // arbitrarily choose graph0 if cost is equal
 }
 
+graph maxCost(graph graph0, graph graph1)
+{
+    /* stages takes priority */
+    if (graph0["Stages"] > graph1["Stages"])
+    {
+        return graph0;
+    }
+    else if (graph1["Stages"] > graph0["Stages"])
+    {
+        return graph1;
+    }
+    else if (graph0["Stages"] == graph1["Stages"])
+    {
+        /* stages are equal, check steps */
+        if (graph0["Steps"] > graph1["Steps"])
+        {
+            return graph0;
+        }
+        else if (graph1["Steps"] > graph0["Steps"])
+        {
+            return graph1;
+        }
+    }
+    return graph0; // arbitrarily choose graph0 if cost is equal
+}
+
 /* graph building */
 graph createAsmGraph(string part, hashGraph hashMem)
 {
@@ -100,10 +126,13 @@ graph createAsmGraph(string part, hashGraph hashMem)
         return primitive; // new graph with just the given part
     }
     /* initialization */
-    graph graphL, graphR, graphBest, graphNew;
+    graph graphL, graphR, graphBest, graphNew, graphWorst;
     string subpartL, subpartR;
     graphBest["Stages"] = 5000;
     graphBest["Steps"] = 5000;
+
+    graphWorst["Stages"] = 1; 
+    graphWorst["Steps"] = 1; 
     /* recursion */
     for (int i = 0; i < part.length() - 1; i++)
     {
@@ -114,6 +143,7 @@ graph createAsmGraph(string part, hashGraph hashMem)
         graphR = createAsmGraph(subpartR, hashMem);
         graphNew = combineGraphs(graphL, graphR); // make intermediate part
         graphBest = minCost(graphNew, graphBest); // save graph with best cost
+        graphWorst = maxCost(graphNew, graphWorst); // save graph with worst cost 
     }
     pair<string, graph> new_elem(part, graphBest);
     hashMem.insert(new_elem); // add graph to hash table
