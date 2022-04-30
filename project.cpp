@@ -12,9 +12,13 @@ EC552 Spring 22 Final Project
 #include <algorithm>
 #include <fstream>
 #include <vector>
+#include <cstdlib> 
 
 using namespace std;
 #define COUNT 10 
+
+std::ofstream outBest ("outBest.txt");
+std::ofstream outWorst ("outWorst.txt"); 
 
 /*
 key: part
@@ -30,6 +34,9 @@ graph:
 /* unordered map structs */
 typedef unordered_map<string, int> graph;
 typedef unordered_map<string, graph> hashGraph;
+
+// global vector for printing and sending to GUI 
+//std::vector<std::string> tree;  
 
 // declare node class for Binary Search Tree Construction (& Printing) (for later use!!)
 class Node {
@@ -222,14 +229,16 @@ void print2DHelper (Node *root, int space) {
     print2DHelper(root->right, space); 
 
     // print node after space, count 
-    cout<<endl; 
+    outBest << " " << std:: endl; 
     for(int i = COUNT; i<space; i++) {
-        cout << " ";  
+        outBest << " " << std::endl;  
     }
-    cout << root->data<< "\n"; 
+    outBest << root->data<< "\n" << std::endl; 
 
     // process left child 
-    print2DHelper(root->left, space) 
+    print2DHelper(root->left, space); 
+
+    outBest.close();  
 }
 
 //print wrapper
@@ -251,16 +260,17 @@ void print2D(Node *root) {
         graph out;
         double cost; 
         vector<char> bst; 
-
+     
         while (!fin.eof())
         {
             fin >> line;
             line.erase(remove(line.begin(), line.end(), '.'), line.end());
             cout << "\n"  << line << endl;
             // send line to make a complete BST structure
-            for (unsigned i - 0; i< file.length(); i++){
+            for (unsigned i - 0; i< line.length(); i++){
+                char in = line[i]; 
                 // insert into an array to use as keys 
-                bst.insert(file[i]); 
+                bst.push_back(in); 
             }
             hashMem.clear();
             out = createAsmGraph(line, hashMem); // return graph
@@ -273,6 +283,8 @@ void print2D(Node *root) {
 
         // send bst to create a binary search tree function 
         Node* root = createBST(bst, 0, bst.size() -1); 
+        
+        // printing and sending to GUI 
         print2D(root); 
     }
 
