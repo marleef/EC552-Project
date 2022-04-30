@@ -14,6 +14,7 @@ EC552 Spring 22 Final Project
 #include <vector>
 
 using namespace std;
+#define COUNT 10 
 
 /*
 key: part
@@ -29,6 +30,19 @@ graph:
 /* unordered map structs */
 typedef unordered_map<string, int> graph;
 typedef unordered_map<string, graph> hashGraph;
+
+// declare node class for Binary Search Tree Construction (& Printing) (for later use!!)
+class Node {
+    public: 
+        Node* left; 
+        char data; 
+        Node* right; 
+
+        Node(char d){
+            data = d; 
+            left = right = NULL; 
+        }
+}; 
 
 /* print vals in hashGraph (nested map), used for debugging*/
 void printhashGraph(hashGraph g)
@@ -164,6 +178,66 @@ graph createAsmGraph(string part, hashGraph hashMem)
     return graphBest;
 }
 
+double calcCost(double cost_stage, double cost_step, graph out) {
+    // define cost function as number of steps and stages and add them together 
+    int stage = out["Stages"]; 
+    int steps = out["Steps"]; 
+
+    int cost; 
+    cost = (cost_stage*stage) + (cost_step*steps); 
+    return cost; 
+}
+
+
+//Construct BST from vector 
+Node* createBST(vector<char> bst, int start, int end) {
+    sort(bst.begin(), bst.end()); 
+
+    // base case 
+    if (start > end) {
+        return NULL; 
+    }
+
+    // get middle element & make root 
+    char mid = (start + end)/2; 
+    Node* root = new Node(bst[mid]); 
+
+    // recursively construct left subtree 
+    root->left = createBST(bst, start, mid-1); 
+
+    //recursively construct right subtree 
+    root->right = createBST(bst, mid+1, end); 
+
+    return root; 
+} 
+
+void print2DHelper (Node *root, int space) {
+    // base case 
+    if (root == NULL){
+        return; 
+    }
+
+    // process right child
+    space += COUNT; 
+    print2DHelper(root->right, space); 
+
+    // print node after space, count 
+    cout<<endl; 
+    for(int i = COUNT; i<space; i++) {
+        cout << " ";  
+    }
+    cout << root->data<< "\n"; 
+
+    // process left child 
+    print2DHelper(root->left, space) 
+}
+
+//print wrapper
+void print2D(Node *root) {
+    // pass initial space count as 0 
+    print2DHelper(root, 0); 
+}
+
 
  int main_interface(string part_file, double cost_stage, double cost_step)
 {
@@ -175,19 +249,32 @@ graph createAsmGraph(string part, hashGraph hashMem)
         string line;
         hashGraph hashMem;
         graph out;
+        double cost; 
+        vector<char> bst; 
 
         while (!fin.eof())
         {
             fin >> line;
             line.erase(remove(line.begin(), line.end(), '.'), line.end());
             cout << "\n"  << line << endl;
+            // send line to make a complete BST structure
+            for (unsigned i - 0; i< file.length(); i++){
+                // insert into an array to use as keys 
+                bst.insert(file[i]); 
+            }
             hashMem.clear();
-            out = createAsmGraph(line, hashMem);
+            out = createAsmGraph(line, hashMem); // return graph
+            cost = calcCost(cost_stage, cost_step, out); // return cost of graph 
             for (const auto &x : out)
             {
                 cout << x.first << ": " << x.second << endl;
             }
         }
+
+        // send bst to create a binary search tree function 
+        Node* root = createBST(bst, 0, bst.size() -1); 
+        print2D(root); 
     }
+
     return 0;
 }
