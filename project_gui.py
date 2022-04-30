@@ -133,8 +133,10 @@ def clicked():
     newim_B = ImageTk.PhotoImage(img_resize)
     graphWorst.configure(image = newim_W)
     graphBest.configure(image = newim_B)
-    graphBest.configure(text="a     b     c     d\n\\     /     \\     /\nab        cd\n  \\      /\n    abcd")
-    graphWorst.configure(text="a     b     c     d\n\\    /      |     |\nab        c    d\n \\        /     |\n   \\    /       |\n     abc       d\n   \\        /\n     \\    /\n     abcd")
+    graphBest.configure(file = "outBest.txt")
+    graphWorst.configure(file = "outWorst.txt")
+    #graphBest.configure(text="a     b     c     d\n\\     /     \\     /\nab        cd\n  \\      /\n    abcd")
+    #graphWorst.configure(text="a     b     c     d\n\\    /      |     |\nab        c    d\n \\        /     |\n   \\    /       |\n     abc       d\n   \\        /\n     \\    /\n     abcd")
 
 RunButton = Button(window, text="Generate Assembly Protocol(s)", command=clicked, fg="green",bg="white")
 RunButton.grid(column=3,row=5)
