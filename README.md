@@ -20,8 +20,11 @@ For ease of use, ensure that the file of the part(s) you want to use is in the s
 
 ## Contributions 
 Delaney Dow (Back End Development, Testing/Debugging, Data Structure & Algorithm Design, Logistical Leader) 
+
 Marlee Feltham (Back End Development, Testing/Debugging) 
+
 James Maher (GUI Development) 
+
 Drew Gross (GUI Debugging, Integration of Back End and GUI) 
 
 ## Suggested Reading
